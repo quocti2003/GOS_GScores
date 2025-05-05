@@ -1,3 +1,59 @@
+//package com.example.gscores.service.impl;
+//
+//import com.example.gscores.dto.ScoreDistributionDTO;
+//import com.example.gscores.model.ScoreCategory;
+//import com.example.gscores.model.Student;
+//import com.example.gscores.model.Subject;
+//import com.example.gscores.repository.StudentRepository;
+//import com.example.gscores.service.ReportService;
+//import org.springframework.stereotype.Service;
+//
+//import java.lang.reflect.Field;
+//import java.util.Arrays;
+//import java.util.HashMap;
+//import java.util.List;
+//import java.util.Map;
+//import java.util.stream.Collectors;
+//
+//@Service
+//public class ReportServiceImpl implements ReportService {
+//
+//    private final StudentRepository studentRepository;
+//
+//    public ReportServiceImpl(StudentRepository studentRepository) {
+//        this.studentRepository = studentRepository;
+//    }
+//
+//    @Override
+//    public List<ScoreDistributionDTO> getScoreDistributions() {
+//        return Arrays.stream(Subject.values()).map(subject -> {
+//            ScoreDistributionDTO dto = new ScoreDistributionDTO();
+//            dto.setSubject(subject.getDisplayName());
+//            Map<String, Long> distribution = new HashMap<>();
+//            for (ScoreCategory category : ScoreCategory.values()) {
+//                distribution.put(category.getLabel(), countStudentsInCategory(subject, category));
+//            }
+//            dto.setDistribution(distribution);
+//            return dto;
+//        }).collect(Collectors.toList());
+//    }
+//
+//    private long countStudentsInCategory(Subject subject, ScoreCategory category) {
+//        return studentRepository.findAll().stream()
+//                .map(student -> {
+//                    try {
+//                        Field field = Student.class.getDeclaredField(subject.getFieldName());
+//                        field.setAccessible(true);
+//                        Double score = (Double) field.get(student);
+//                        return score != null && category.matches(score) ? 1 : 0;
+//                    } catch (NoSuchFieldException | IllegalAccessException e) {
+//                        return 0;
+//                    }
+//                })
+//                .mapToLong(Integer::longValue)
+//                .sum();
+//    }
+//}
 package com.example.gscores.service.impl;
 
 import com.example.gscores.dto.ScoreDistributionDTO;
@@ -6,17 +62,21 @@ import com.example.gscores.model.Student;
 import com.example.gscores.model.Subject;
 import com.example.gscores.repository.StudentRepository;
 import com.example.gscores.service.ReportService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-
 @Service
 public class ReportServiceImpl implements ReportService {
+
+    private static final Logger logger = LoggerFactory.getLogger(ReportServiceImpl.class);
 
     private final StudentRepository studentRepository;
 
@@ -26,31 +86,29 @@ public class ReportServiceImpl implements ReportService {
 
     @Override
     public List<ScoreDistributionDTO> getScoreDistributions() {
-        return Arrays.stream(Subject.values()).map(subject -> {
-            ScoreDistributionDTO dto = new ScoreDistributionDTO();
-            dto.setSubject(subject.getDisplayName());
-            Map<String, Long> distribution = new HashMap<>();
-            for (ScoreCategory category : ScoreCategory.values()) {
-                distribution.put(category.getLabel(), countStudentsInCategory(subject, category));
-            }
-            dto.setDistribution(distribution);
-            return dto;
-        }).collect(Collectors.toList());
-    }
+        // Gọi aggregation từ repository
+        List<ScoreDistributionDTO> distributions = studentRepository.getScoreDistributions(
+                Subject.TOAN.getDisplayName(),
+                Subject.NGU_VAN.getDisplayName(),
+                Subject.NGOAI_NGU.getDisplayName(),
+                Subject.VAT_LI.getDisplayName(),
+                Subject.HOA_HOC.getDisplayName(),
+                Subject.SINH_HOC.getDisplayName(),
+                Subject.LICH_SU.getDisplayName(),
+                Subject.DIA_LI.getDisplayName(),
+                Subject.GDCD.getDisplayName()
+        );
 
-    private long countStudentsInCategory(Subject subject, ScoreCategory category) {
-        return studentRepository.findAll().stream()
-                .map(student -> {
-                    try {
-                        Field field = Student.class.getDeclaredField(subject.getFieldName());
-                        field.setAccessible(true);
-                        Double score = (Double) field.get(student);
-                        return score != null && category.matches(score) ? 1 : 0;
-                    } catch (NoSuchFieldException | IllegalAccessException e) {
-                        return 0;
-                    }
-                })
-                .mapToLong(Integer::longValue)
-                .sum();
+        // In log cho từng môn học
+        for (ScoreDistributionDTO dto : distributions) {
+            String subject = dto.getSubject();
+            Map<String, Long> distribution = dto.getDistribution();
+            logger.debug("Phân phối điểm cho môn {}:", subject);
+            distribution.forEach((category, count) -> {
+                logger.debug("  - {}: {} học sinh", category, count);
+            });
+        }
+
+        return distributions;
     }
 }

@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/x-icon" href="/gos.ico">
     <title>G-Scores Dashboard</title>
 
     <!-- Bootstrap CSS -->
@@ -144,17 +145,16 @@
                 <section id="reports" class="mb-4 d-none">
                     <div class="card shadow-sm">
                         <div class="card-body">
-                            <!-- Translated title -->
-                            <h5 class="card-title mb-3 fw-bold">Score Statistics by Subject</h5>
+                            <h5 class="card-title mb-3 fw-bold">Score Statistics by Subjects</h5>
                             <div id="reportsContent">
-                                <canvas id="scoreDistributionChart"></canvas>
+                                <div id="chartsContainer"></div>
                             </div>
                             <div id="reportsLoading" class="text-center d-none">
                                 <div class="spinner-border spinner-border-sm" role="status">
                                     <span class="visually-hidden">Loading...</span>
                                 </div>
                             </div>
-                            <div id="reportsError" class="alert alert-danger mt-3 d-none" role="alert"></div> <!-- Error messages likely set via JS -->
+                            <div id="reportsError" class="alert alert-danger mt-3 d-none" role="alert"></div>
                         </div>
                     </div>
                 </section>

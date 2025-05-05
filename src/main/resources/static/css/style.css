@@ -98,14 +98,28 @@ main {
 /* --- Reports Chart --- */
 #reportsContent {
     max-width: 100%;
-    overflow-x: auto;
+    overflow-x: hidden; /* Đổi thành hidden để tránh scrollbar ngang */
 }
 
-#scoreDistributionChart {
-    max-height: 400px;
+/* Đảm bảo mỗi chart container có kích thước hợp lý */
+.chart-container {
+    width: 100%;
+    min-height: 200px; /* Chiều cao tối thiểu để tránh méo */
+    max-height: 250px; /* Giới hạn chiều cao tối đa */
 }
 
-/* --- Responsive Adjustments --- */
+/* Đảm bảo canvas bên trong chart container đầy đủ chiều rộng */
+.chart-container canvas {
+    width: 100% !important;
+    height: 100% !important;
+}
+
+/* Tối ưu khoảng cách giữa các biểu đồ */
+.card-body .chart-container + .chart-container {
+    margin-top: 1rem; /* Khoảng cách giữa biểu đồ cột và tròn */
+}
+
+/* Responsive adjustments cho biểu đồ */
 @media (max-width: 767.98px) {
     .sidebar {
         position: static;
@@ -138,6 +152,29 @@ main {
 
     #reportsContent {
         padding: 0.5rem;
+    }
+
+    /* Giảm chiều cao biểu đồ trên thiết bị nhỏ */
+    .chart-container {
+        min-height: 150px;
+        max-height: 200px;
+    }
+
+    /* Điều chỉnh font size cho nhãn trên biểu đồ tròn */
+    .chart-container .chart-legend {
+        font-size: 0.8rem;
+    }
+}
+
+/* Tối ưu cho màn hình rất nhỏ (dưới 576px) */
+@media (max-width: 575.98px) {
+    .chart-container {
+        min-height: 120px;
+        max-height: 150px;
+    }
+
+    .card-body h6 {
+        font-size: 0.9rem; /* Giảm kích thước tiêu đề môn học */
     }
 }
 
