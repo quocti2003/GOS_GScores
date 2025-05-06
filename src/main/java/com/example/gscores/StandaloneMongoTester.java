@@ -13,14 +13,11 @@ import org.bson.Document;
 public class StandaloneMongoTester {
 
     public static void main(String[] args) {
-
-        // --- !!! QUAN TRỌNG: THAY THẾ URI BẰNG CONNECTION STRING THẬT CỦA BẠN !!! ---
-        // Lấy từ MongoDB Atlas, đã thay <username>, <password> và thêm /<database_name>
         String connectionString = "mongodb+srv://quocti:123456789ti@cluster0.y3phnc4.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
         // --------------------------------------------------------------------------
 
         System.out.println("--- Bắt đầu kiểm tra kết nối MongoDB độc lập ---");
-        System.out.println("Sử dụng Connection String: " + connectionString); // In ra để kiểm tra (Ẩn password nếu cần)
+        System.out.println("Sử dụng Connection String: " + connectionString);
 
         // --- Kiểm tra các lỗi phổ biến trong Connection String ---
         if (connectionString == null || connectionString.isBlank()) {
@@ -28,24 +25,22 @@ public class StandaloneMongoTester {
             return;
         }
         if (connectionString.contains("<password>") || connectionString.contains("<db_password>") || connectionString.contains("<username>")) {
-            System.err.println("LỖI: Connection String vẫn chứa placeholder (<password>, <username>...). Vui lòng thay thế bằng thông tin thật!");
+            System.err.println("LỖI: Connection String vẫn chứa placeholder (<password>, <username>...).");
             return;
         }
         // Kiểm tra xem có tên database sau dấu / và trước dấu ? không
         if (!connectionString.matches(".+/.+\\?.*")) {
-            // Regex đơn giản, có thể không đúng 100% cho mọi trường hợp URI phức tạp
             System.err.println("CẢNH BÁO: Connection String dường như thiếu tên database trước dấu '?'. Ví dụ: ...mongodb.net/tên_database?retryWrites=true");
-            // Có thể vẫn tiếp tục thử kết nối, nhưng khả năng lỗi cao nếu Spring cần tên DB từ URI
         }
-        // --- Hết kiểm tra ---
 
 
-        // Cấu hình ServerApi (Giữ nguyên như bạn đã có)
+
+        // Cấu hình ServerApi
         ServerApi serverApi = ServerApi.builder()
                 .version(ServerApiVersion.V1)
                 .build();
 
-        // Cấu hình MongoClientSettings (Giữ nguyên)
+        // Cấu hình MongoClientSettings
         MongoClientSettings settings = MongoClientSettings.builder()
                 .applyConnectionString(new ConnectionString(connectionString))
                 .serverApi(serverApi)
@@ -58,7 +53,7 @@ public class StandaloneMongoTester {
         System.out.println("Đang tạo MongoClient và thử kết nối/ping...");
         try (MongoClient mongoClient = MongoClients.create(settings)) {
             try {
-                // Ping vào database 'admin' (database này thường luôn tồn tại)
+                // Ping vào database 'admin'
                 MongoDatabase database = mongoClient.getDatabase("admin");
                 database.runCommand(new Document("ping", 1));
                 System.out.println("**************************************************************");

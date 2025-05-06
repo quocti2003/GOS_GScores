@@ -111,7 +111,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
         try {
             const response = await fetch(`/api/scores/${regNumber}`);
-            if (!response.ok) throw new Error(response.status === 404 ? 'Không tìm thấy số báo danh' : 'Lỗi khi tra cứu');
+            if (!response.ok) {
+                if (response.status === 404) {
+                    throw new Error(`SBD ${regNumber} does not exist. Please try again!!!`);
+                }
+                throw new Error('An error occurred while retrieving scores. Please try again');
+            }
             const data = await response.json();
             detailedScoresContent.innerHTML = `
                 <p>Kết quả cho SBD: <strong>${regNumber}</strong></p>
@@ -129,7 +134,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 </ul>
             `;
         } catch (error) {
-            displayError(detailedScoresError, `Lỗi: ${error.message}`);
+            displayError(detailedScoresError, error.message);
             detailedScoresContent.innerHTML = '<p class="text-muted">Detailed view of search scores here.</p>';
         } finally {
             detailedScoresLoading.classList.add('d-none');
@@ -194,8 +199,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 // Dữ liệu cho biểu đồ (chỉ lấy 4 loại điểm chính)
                 const labels = ['Score <4', 'Score 4-6', 'Score 6-8', 'Score >=8'];
                 const dataValues = labels.map(key => distribution[key.replace('Score ', '')] || 0);
-//                const labels = ['<4', '4-6', '6-8', '>=8'];
-//                const dataValues = labels.map(key => distribution[key] || 0);
                 const total = dataValues.reduce((a, b) => a + b, 0);
 
                 // Biểu đồ cột
@@ -240,9 +243,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 // Biểu đồ tròn
                 const pieData = labels.map((label, index) => ({
                     label: label,
-//                    data: distribution[label] || 0,
                     data: distribution[label.replace('Score ', '')] || 0,
-//                    percentage: total > 0 ? ((distribution[label] || 0) / total * 100).toFixed(2) + '%' : '0%'
                     percentage: total > 0 ? ((distribution[label.replace('Score ', '')] || 0) / total * 100).toFixed(2) + '%' : '0%'
                 }));
                 if (scoreCharts[`pie-${subject}`]) scoreCharts[`pie-${subject}`].destroy();
@@ -281,6 +282,21 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // --- Event Listeners ---
+    if (registrationNumberInput) {
+        // Chặn nhập ký tự không phải số
+        registrationNumberInput.addEventListener('keypress', (event) => {
+            const charCode = event.charCode;
+            if (charCode < 48 || charCode > 57) { // 48-57 là mã ASCII của số 0-9
+                event.preventDefault();
+            }
+        });
+
+        // Xóa các ký tự không phải số nếu người dùng dán giá trị
+        registrationNumberInput.addEventListener('input', (event) => {
+            const value = event.target.value;
+            event.target.value = value.replace(/[^0-9]/g, '');
+        });
+    }
     if (registrationForm) {
         registrationForm.addEventListener('submit', async (event) => {
             event.preventDefault();
@@ -292,12 +308,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
             const regNumber = registrationNumberInput.value.trim();
 
-            if (!/^\d{7,12}$/.test(regNumber)) {
-                displayValidationError(registrationNumberInput, registrationNumberError, 'Số báo danh phải có 7-12 chữ số.');
-                detailedScoresLoading.classList.add('d-none');
-                submitBtn.disabled = false;
-                return;
-            }
+            // Bỏ qua validation nếu muốn kiểm tra ngay cả khi không hợp lệ
+            // if (!/^\d{7,12}$/.test(regNumber)) {
+            //     displayValidationError(registrationNumberInput, registrationNumberError, 'Số báo danh phải có 7-12 chữ số.');
+            //     detailedScoresLoading.classList.add('d-none');
+            //     submitBtn.disabled = false;
+            //     return;
+            // }
 
             await searchScores(regNumber);
             submitBtn.disabled = false;

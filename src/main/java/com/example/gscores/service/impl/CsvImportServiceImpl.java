@@ -81,19 +81,6 @@ public class CsvImportServiceImpl implements CsvImportService {
         student.setGdcd(parseDouble(line[9]));
         student.setMaNgoaiNgu(line[10]);
         return student;
-
-//        student.setSbd(line[0].trim());
-//        student.setToan(parseDouble(line[1]));
-//        student.setNguVan(parseDouble(line[2]));
-//        student.setNgoaiNgu(parseDouble(line[3]));
-//        student.setVatLi(parseDouble(line[4]));
-//        student.setHoaHoc(parseDouble(line[5]));
-//        student.setSinhHoc(parseDouble(line[6]));
-//        student.setLichSu(parseDouble(line[7]));
-//        student.setDiaLi(parseDouble(line[8]));
-//        student.setGdcd(parseDouble(line[9]));
-//        student.setMaNgoaiNgu(line[10]);
-
     }
 
     private Double parseDouble(String value) {

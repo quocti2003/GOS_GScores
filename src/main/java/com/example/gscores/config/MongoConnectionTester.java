@@ -16,7 +16,7 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.core.annotation.Order; // Optional: để kiểm soát thứ tự chạy nếu có nhiều Runner
 import org.springframework.stereotype.Component;
 
-@Component // Đánh dấu là một Spring Bean để được quét và quản lý
+@Component // Mark class as Spring Bean
 @Order(1) // Optional: Đặt thứ tự ưu tiên chạy (số nhỏ chạy trước)
 public class MongoConnectionTester implements CommandLineRunner {
 
@@ -36,7 +36,7 @@ public class MongoConnectionTester implements CommandLineRunner {
             return; // Không thực hiện kiểm tra nếu không có URI
         }
 
-        // Kiểm tra xem có placeholder password không (đây là lỗi phổ biến)
+        // Kiểm tra xem có placeholder password không
         if (connectionString.contains("<password>") || connectionString.contains("<db_password>")) {
             log.error("LỖI KIỂM TRA KẾT NỐI: Connection string '{}' dường như chứa placeholder '<password>' hoặc '<db_password>'. Vui lòng thay thế bằng mật khẩu thực tế!", connectionString);
             // Bạn có thể quyết định dừng ứng dụng ở đây nếu muốn bằng cách ném Exception
@@ -45,12 +45,12 @@ public class MongoConnectionTester implements CommandLineRunner {
         }
 
 
-        // Cấu hình ServerApi (giống code gốc của bạn)
+        // Cấu hình ServerApi
         ServerApi serverApi = ServerApi.builder()
                 .version(ServerApiVersion.V1)
                 .build();
 
-        // Cấu hình MongoClientSettings (giống code gốc của bạn)
+        // Cấu hình MongoClientSettings
         MongoClientSettings settings = MongoClientSettings.builder()
                 .applyConnectionString(new ConnectionString(connectionString))
                 .serverApi(serverApi)

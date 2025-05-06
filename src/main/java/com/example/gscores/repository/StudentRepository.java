@@ -10,7 +10,7 @@ import java.util.List;
 
 public interface StudentRepository extends MongoRepository<Student, String> {
     @Aggregation({
-            // Giai đoạn 1: Chọn các trường điểm và xử lý null
+            // Chọn các trường điểm và xử lý null
             "{$project: { " +
                     "toan: { $ifNull: ['$toan', null] }, " +
                     "nguVan: { $ifNull: ['$nguVan', null] }, " +
@@ -22,7 +22,7 @@ public interface StudentRepository extends MongoRepository<Student, String> {
                     "diaLi: { $ifNull: ['$diaLi', null] }, " +
                     "gdcd: { $ifNull: ['$gdcd', null] }" +
                     "}}",
-            // Giai đoạn 2: Tính phân phối cho từng môn học
+            // Tính phân phối cho từng môn học
             "{$facet: { " +
                     "'toan': [{$bucket: { " +
                     "groupBy: '$toan', " +
@@ -79,7 +79,7 @@ public interface StudentRepository extends MongoRepository<Student, String> {
                     "output: { count: { $sum: 1 } } " +
                     "}}] " +
                     "}}",
-            // Giai đoạn 3: Chuyển đổi kết quả thành định dạng ScoreDistributionDTO
+            // Chuyển đổi kết quả thành định dạng ScoreDistributionDTO
             "{$project: { " +
                     "distributions: { " +
                     "$concatArrays: [ " +
@@ -95,7 +95,7 @@ public interface StudentRepository extends MongoRepository<Student, String> {
                     "]" +
                     "}" +
                     "}}",
-            // Giai đoạn 4: Chuyển đổi thành danh sách ScoreDistributionDTO
+            // Chuyển đổi thành danh sách ScoreDistributionDTO
             "{$unwind: '$distributions'}",
             "{$group: { " +
                     "_id: '$distributions.subject', " +
@@ -112,11 +112,3 @@ public interface StudentRepository extends MongoRepository<Student, String> {
             String sinhHoc, String lichSu, String diaLi, String gdcd
     );
 }
-//package com.example.gscores.repository;
-//
-//import com.example.gscores.model.Student;
-//import org.springframework.data.mongodb.repository.MongoRepository;
-//
-//public interface StudentRepository extends MongoRepository<Student, String> {
-//
-//}

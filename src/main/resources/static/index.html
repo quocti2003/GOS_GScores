@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en"> <!-- Changed language to English -->
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -83,7 +83,7 @@
                 <section id="dashboard" class="mb-4 d-none">
                     <div class="card shadow-sm">
                         <div class="card-body">
-                            <h5 class="card-title mb-3 fw-bold">Top 10 Group A Scores</h5> <!-- Translated from "Top 10 Điểm Khối A" -->
+                            <h5 class="card-title mb-3 fw-bold">Top 10 Group A Scores</h5>
                             <div id="dashboardContent">
                                 <!-- Translated content -->
                                 <p class="text-muted">The list of the top 10 students with the highest Group A scores will be displayed here.</p>
@@ -106,16 +106,16 @@
                             <h5 class="card-title mb-3 fw-bold">User Registration</h5>
                             <form id="registration-form">
                                 <div class="mb-3">
-                                    <!-- Kept existing English label -->
+
                                     <label for="registrationNumberInput" class="form-label">Registration Number:</label>
                                     <div class="input-group">
-                                        <!-- Kept existing English placeholder -->
+
                                         <input type="text" class="form-control" id="registrationNumberInput"
-                                               placeholder="Enter registration number" required>
-                                        <!-- Kept existing English button text -->
+                                               placeholder="Enter registration number" required pattern="[0-9]*" inputmode="numeric">
+
                                         <button class="btn btn-dark" type="submit" id="submitBtn">Submit</button>
                                     </div>
-                                    <!-- Translated error message -->
+
                                     <div class="invalid-feedback" id="registrationNumberError">
                                         Please enter a valid registration number.
                                     </div>
@@ -125,10 +125,10 @@
                     </div>
                     <div class="card shadow-sm mt-4">
                         <div class="card-body">
-                            <!-- Kept existing English title -->
+
                             <h5 class="card-title mb-3 fw-bold">Detailed Score</h5>
                             <div id="detailedScoresContent">
-                                <!-- Translated descriptive text -->
+
                                 <p class="text-muted">Detailed view of search scores here!</p>
                             </div>
                             <div id="detailedScoresLoading" class="text-center d-none">
@@ -163,9 +163,9 @@
                 <section id="settings" class="mb-4 d-none">
                     <div class="card shadow-sm">
                         <div class="card-body">
-                            <!-- Translated title -->
+
                             <h5 class="card-title mb-3 fw-bold">Settings</h5>
-                            <!-- Translated descriptive text -->
+
                             <p class="text-muted">Settings functionality has not been implemented yet.</p>
                         </div>
                     </div>
@@ -180,6 +180,6 @@
         integrity="sha384-k6d4wzSIapyDyv1kpU366/PK5hCdSbCRGRCMv+eplOQJWyd1fbcAu9OCUj5zNLiq"
         crossorigin="anonymous"></script>
 <!-- Custom JS -->
-<script src="/js/main.js"></script> <!-- Assuming main.js handles dynamic content and potential error messages -->
+<script src="/js/main.js"></script>
 </body>
 </html>
