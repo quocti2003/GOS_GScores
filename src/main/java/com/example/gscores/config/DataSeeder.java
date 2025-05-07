@@ -19,8 +19,15 @@ public class DataSeeder implements CommandLineRunner {
     @Autowired
     private StudentRepository studentRepository;
 
+    @Value("${app.data.seeding.enabled:true}")
+    private boolean seedingEnabled;
+
     @Override
     public void run(String... args) {
+        if (!seedingEnabled) {
+            logger.info("Data seeding is disabled. Skipping CSV import.");
+            return;
+        }
         if (studentRepository.count() == 0) {
             logger.info("Collection 'students' is empty. Starting CSV import...");
             csvImportService.importCsv();
