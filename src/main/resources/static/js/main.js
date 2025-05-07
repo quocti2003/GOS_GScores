@@ -329,7 +329,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
             if (sectionId === 'dashboard') {
                 loadDashboard();
-            } else if (sectionId === 'search-scores') {
+            } 
+            else if (sectionId === 'reports') {
+                loadReports();
+            }
+            else if (sectionId === 'search-scores') {
                 registrationForm.reset();
                 clearValidationError(registrationNumberInput);
                 hideError(detailedScoresError);
