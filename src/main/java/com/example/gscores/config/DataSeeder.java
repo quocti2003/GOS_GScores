@@ -20,7 +20,7 @@ public class DataSeeder implements CommandLineRunner {
     @Autowired
     private StudentRepository studentRepository;
 
-    @Value("${app.data.seeding.enabled:true}")
+    @Value("${app.data.seeding.enabled:false}")
     private boolean seedingEnabled;
 
     @Override
